@@ -6,7 +6,7 @@ This repo hosts the codebase about learning Golang by attempting to implement th
 
 > This is for educational purpose not to be used in a production environment.
 1. Clone the repo
-2. `go build` and then `./events` to build and run project
+2. `go build` and then `./build-name` to build and run project
 
 ## Contribution
 

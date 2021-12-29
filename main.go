@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 )
@@ -16,7 +17,8 @@ func (server server) init() {
 	server.eventsEmitter.on("connect", handleConnection)
 	server.eventsEmitter.on("connect", logMessage)
 	server.eventsEmitter.on("data", logMessage)
-	server.eventsEmitter.on("disconnect", logMessage)
+	server.eventsEmitter.on("error", errorHandler)
+	server.eventsEmitter.on("disconnect", handleDisonnection)
 }
 
 // Function for connecting to server
@@ -42,16 +44,28 @@ func (server *server) disconnect() {
 	}
 }
 
-var handleConnection = func(args ...string) {
-	fmt.Println(args[0])
+var handleConnection = func(args ...interface{}) (interface{}, error) {
+	values := args[0].([]interface{})
+	fmt.Println(values[0], values[1])
+	return nil, nil
 }
 
-var handleDisonnection = func(args ...string) {
-	fmt.Println(args[0])
+var handleDisonnection = func(args ...interface{}) (interface{}, error) {
+	return nil, errors.New("failed to disconnect")
 }
 
-var logMessage = func(args ...string) {
-	log.Print(args[1])
+var errorHandler = func(args ...interface{}) (interface{}, error) {
+	errors := args[0].([]interface{})
+	for _, error := range errors {
+		fmt.Println("ERROR!", error)
+	}
+	return nil, nil
+}
+
+var logMessage = func(args ...interface{}) (interface{}, error) {
+	values := args[0].([]interface{})
+	log.Print(values[1])
+	return nil, nil
 }
 
 func main() {
